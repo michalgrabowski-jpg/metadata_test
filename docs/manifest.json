@@ -338,6 +338,172 @@
       "primary_key": [],
       "time_spine": null
     },
+    "model.test_project.int_transaction_metrics": {
+      "database": "test_database",
+      "schema": "intermediate",
+      "name": "int_transaction_metrics",
+      "resource_type": "model",
+      "package_name": "test_project",
+      "path": "int_transaction_metrics.sql",
+      "original_file_path": "models/int_transaction_metrics.sql",
+      "unique_id": "model.test_project.int_transaction_metrics",
+      "fqn": [
+        "test_project",
+        "int_transaction_metrics"
+      ],
+      "alias": "int_transaction_metrics",
+      "checksum": {
+        "name": "sha256",
+        "checksum": "fake"
+      },
+      "config": {
+        "enabled": true,
+        "alias": null,
+        "schema": null,
+        "database": null,
+        "tags": [],
+        "meta": {},
+        "group": null,
+        "materialized": "table",
+        "incremental_strategy": null,
+        "persist_docs": {},
+        "post-hook": [],
+        "pre-hook": [],
+        "quoting": {},
+        "column_types": {},
+        "full_refresh": null,
+        "unique_key": null,
+        "on_schema_change": "ignore",
+        "on_configuration_change": "apply",
+        "grants": {},
+        "packages": [],
+        "docs": {
+          "show": true,
+          "node_color": null
+        },
+        "contract": {
+          "enforced": false
+        },
+        "access": "protected"
+      },
+      "tags": [],
+      "description": "Daily transaction volume and value metrics",
+      "columns": {
+        "date_day": {
+          "name": "date_day",
+          "description": "Calendar date",
+          "meta": {},
+          "data_type": "DATE",
+          "constraints": [],
+          "quote": null,
+          "config": {
+            "tags": []
+          },
+          "tags": [],
+          "granularity": null,
+          "doc_blocks": []
+        },
+        "transaction_count": {
+          "name": "transaction_count",
+          "description": "Number of completed transactions on this day",
+          "meta": {},
+          "data_type": "INT64",
+          "constraints": [],
+          "quote": null,
+          "config": {
+            "tags": []
+          },
+          "tags": [],
+          "granularity": null,
+          "doc_blocks": []
+        },
+        "gross_amount_usd": {
+          "name": "gross_amount_usd",
+          "description": "Sum of all transaction amounts in USD",
+          "meta": {},
+          "data_type": "FLOAT64",
+          "constraints": [],
+          "quote": null,
+          "config": {
+            "tags": []
+          },
+          "tags": [],
+          "granularity": null,
+          "doc_blocks": []
+        },
+        "avg_amount_usd": {
+          "name": "avg_amount_usd",
+          "description": "Average transaction value in USD",
+          "meta": {},
+          "data_type": "FLOAT64",
+          "constraints": [],
+          "quote": null,
+          "config": {
+            "tags": []
+          },
+          "tags": [],
+          "granularity": null,
+          "doc_blocks": []
+        },
+        "refund_count": {
+          "name": "refund_count",
+          "description": "Number of refunded transactions on this day",
+          "meta": {},
+          "data_type": "INT64",
+          "constraints": [],
+          "quote": null,
+          "config": {
+            "tags": []
+          },
+          "tags": [],
+          "granularity": null,
+          "doc_blocks": []
+        }
+      },
+      "meta": {},
+      "group": null,
+      "docs": {
+        "show": true,
+        "node_color": null
+      },
+      "patch_path": "test_project://models/schema.yml",
+      "build_path": null,
+      "unrendered_config": {
+        "materialized": "table"
+      },
+      "created_at": 1746057600.0,
+      "relation_name": "`test_database`.`intermediate`.`int_transaction_metrics`",
+      "raw_code": "select transaction_date as date_day,\n  countif(is_completed) as transaction_count,\n  sum(if(is_completed, amount_usd, 0)) as gross_amount_usd,\n  avg(if(is_completed, amount_usd, null)) as avg_amount_usd,\n  countif(not is_completed) as refund_count\nfrom {{ ref('stg_transactions') }}\ngroup by 1",
+      "doc_blocks": [],
+      "language": "sql",
+      "refs": [
+        {
+          "name": "stg_transactions",
+          "package": null,
+          "version": null
+        }
+      ],
+      "sources": [],
+      "metrics": [],
+      "depends_on": {
+        "macros": [],
+        "nodes": [
+          "model.test_project.stg_transactions"
+        ]
+      },
+      "compiled_path": "target/compiled/test_project/models/int_transaction_metrics.sql",
+      "contract": {
+        "enforced": false,
+        "alias_types": true
+      },
+      "access": "protected",
+      "constraints": [],
+      "version": null,
+      "latest_version": null,
+      "deprecation_date": null,
+      "primary_key": [],
+      "time_spine": null
+    },
     "model.test_project.fct_daily_revenue": {
       "database": "test_database",
       "schema": "marts",
@@ -387,7 +553,7 @@
         "access": "protected"
       },
       "tags": [],
-      "description": "Daily revenue fact table for reporting",
+      "description": "Daily revenue fact table for reporting and dashboards",
       "columns": {
         "date_day": {
           "name": "date_day",
@@ -405,7 +571,7 @@
         },
         "transaction_count": {
           "name": "transaction_count",
-          "description": "Number of completed transactions on this day",
+          "description": "Completed transactions on this day",
           "meta": {},
           "data_type": "INT64",
           "constraints": [],
@@ -419,7 +585,7 @@
         },
         "gross_revenue_usd": {
           "name": "gross_revenue_usd",
-          "description": "Sum of all transaction amounts in USD",
+          "description": "Sum of transaction amounts in USD",
           "meta": {},
           "data_type": "FLOAT64",
           "constraints": [],
@@ -473,12 +639,12 @@
       },
       "created_at": 1746057600.0,
       "relation_name": "`test_database`.`marts`.`fct_daily_revenue`",
-      "raw_code": "select transaction_date as date_day,\n  count(*) as transaction_count,\n  sum(total_amount_usd) as gross_revenue_usd,\n  sum(total_amount_usd) * 0.95 as net_revenue_usd,\n  avg(total_amount_usd) as avg_transaction_value\nfrom {{ ref('int_customer_summary') }}\ngroup by 1",
+      "raw_code": "select date_day,\n  transaction_count,\n  gross_amount_usd as gross_revenue_usd,\n  gross_amount_usd - (refund_count * avg_amount_usd) as net_revenue_usd,\n  avg_amount_usd as avg_transaction_value\nfrom {{ ref('int_transaction_metrics') }}",
       "doc_blocks": [],
       "language": "sql",
       "refs": [
         {
-          "name": "int_customer_summary",
+          "name": "int_transaction_metrics",
           "package": null,
           "version": null
         }
@@ -488,10 +654,196 @@
       "depends_on": {
         "macros": [],
         "nodes": [
-          "model.test_project.int_customer_summary"
+          "model.test_project.int_transaction_metrics"
         ]
       },
       "compiled_path": "target/compiled/test_project/models/fct_daily_revenue.sql",
+      "contract": {
+        "enforced": false,
+        "alias_types": true
+      },
+      "access": "protected",
+      "constraints": [],
+      "version": null,
+      "latest_version": null,
+      "deprecation_date": null,
+      "primary_key": [],
+      "time_spine": null
+    },
+    "model.test_project.fct_customer_ltv": {
+      "database": "test_database",
+      "schema": "marts",
+      "name": "fct_customer_ltv",
+      "resource_type": "model",
+      "package_name": "test_project",
+      "path": "fct_customer_ltv.sql",
+      "original_file_path": "models/fct_customer_ltv.sql",
+      "unique_id": "model.test_project.fct_customer_ltv",
+      "fqn": [
+        "test_project",
+        "fct_customer_ltv"
+      ],
+      "alias": "fct_customer_ltv",
+      "checksum": {
+        "name": "sha256",
+        "checksum": "fake"
+      },
+      "config": {
+        "enabled": true,
+        "alias": null,
+        "schema": null,
+        "database": null,
+        "tags": [],
+        "meta": {},
+        "group": null,
+        "materialized": "table",
+        "incremental_strategy": null,
+        "persist_docs": {},
+        "post-hook": [],
+        "pre-hook": [],
+        "quoting": {},
+        "column_types": {},
+        "full_refresh": null,
+        "unique_key": null,
+        "on_schema_change": "ignore",
+        "on_configuration_change": "apply",
+        "grants": {},
+        "packages": [],
+        "docs": {
+          "show": true,
+          "node_color": null
+        },
+        "contract": {
+          "enforced": false
+        },
+        "access": "protected"
+      },
+      "tags": [],
+      "description": "Customer lifetime value \u2014 joins customer summary with overall spend benchmarks",
+      "columns": {
+        "customer_id": {
+          "name": "customer_id",
+          "description": "Customer identifier",
+          "meta": {},
+          "data_type": "STRING",
+          "constraints": [],
+          "quote": null,
+          "config": {
+            "tags": []
+          },
+          "tags": [],
+          "granularity": null,
+          "doc_blocks": []
+        },
+        "first_order_date": {
+          "name": "first_order_date",
+          "description": "Date of customer's first completed transaction",
+          "meta": {},
+          "data_type": "DATE",
+          "constraints": [],
+          "quote": null,
+          "config": {
+            "tags": []
+          },
+          "tags": [],
+          "granularity": null,
+          "doc_blocks": []
+        },
+        "last_order_date": {
+          "name": "last_order_date",
+          "description": "Date of customer's most recent transaction",
+          "meta": {},
+          "data_type": "DATE",
+          "constraints": [],
+          "quote": null,
+          "config": {
+            "tags": []
+          },
+          "tags": [],
+          "granularity": null,
+          "doc_blocks": []
+        },
+        "total_orders": {
+          "name": "total_orders",
+          "description": "Total number of completed orders",
+          "meta": {},
+          "data_type": "INT64",
+          "constraints": [],
+          "quote": null,
+          "config": {
+            "tags": []
+          },
+          "tags": [],
+          "granularity": null,
+          "doc_blocks": []
+        },
+        "ltv_usd": {
+          "name": "ltv_usd",
+          "description": "Total lifetime spend in USD",
+          "meta": {},
+          "data_type": "FLOAT64",
+          "constraints": [],
+          "quote": null,
+          "config": {
+            "tags": []
+          },
+          "tags": [],
+          "granularity": null,
+          "doc_blocks": []
+        },
+        "ltv_segment": {
+          "name": "ltv_segment",
+          "description": "LTV segment: high / mid / low vs. daily avg",
+          "meta": {},
+          "data_type": "STRING",
+          "constraints": [],
+          "quote": null,
+          "config": {
+            "tags": []
+          },
+          "tags": [],
+          "granularity": null,
+          "doc_blocks": []
+        }
+      },
+      "meta": {},
+      "group": null,
+      "docs": {
+        "show": true,
+        "node_color": null
+      },
+      "patch_path": "test_project://models/schema.yml",
+      "build_path": null,
+      "unrendered_config": {
+        "materialized": "table"
+      },
+      "created_at": 1746057600.0,
+      "relation_name": "`test_database`.`marts`.`fct_customer_ltv`",
+      "raw_code": "select\n  c.customer_id,\n  c.first_transaction_date as first_order_date,\n  c.last_transaction_date  as last_order_date,\n  c.transaction_count      as total_orders,\n  c.total_amount_usd       as ltv_usd,\n  case\n    when c.total_amount_usd > avg(t.gross_amount_usd) * 10 then 'high'\n    when c.total_amount_usd > avg(t.gross_amount_usd) * 3  then 'mid'\n    else 'low'\n  end as ltv_segment\nfrom {{ ref('int_customer_summary') }} c\ncross join {{ ref('int_transaction_metrics') }} t\ngroup by 1,2,3,4,5",
+      "doc_blocks": [],
+      "language": "sql",
+      "refs": [
+        {
+          "name": "int_customer_summary",
+          "package": null,
+          "version": null
+        },
+        {
+          "name": "int_transaction_metrics",
+          "package": null,
+          "version": null
+        }
+      ],
+      "sources": [],
+      "metrics": [],
+      "depends_on": {
+        "macros": [],
+        "nodes": [
+          "model.test_project.int_customer_summary",
+          "model.test_project.int_transaction_metrics"
+        ]
+      },
+      "compiled_path": "target/compiled/test_project/models/fct_customer_ltv.sql",
       "contract": {
         "enforced": false,
         "alias_types": true
@@ -679,8 +1031,15 @@
     "model.test_project.int_customer_summary": [
       "model.test_project.stg_transactions"
     ],
+    "model.test_project.int_transaction_metrics": [
+      "model.test_project.stg_transactions"
+    ],
     "model.test_project.fct_daily_revenue": [
-      "model.test_project.int_customer_summary"
+      "model.test_project.int_transaction_metrics"
+    ],
+    "model.test_project.fct_customer_ltv": [
+      "model.test_project.int_customer_summary",
+      "model.test_project.int_transaction_metrics"
     ]
   },
   "child_map": {
@@ -688,12 +1047,18 @@
       "model.test_project.stg_transactions"
     ],
     "model.test_project.stg_transactions": [
-      "model.test_project.int_customer_summary"
+      "model.test_project.int_customer_summary",
+      "model.test_project.int_transaction_metrics"
     ],
     "model.test_project.int_customer_summary": [
-      "model.test_project.fct_daily_revenue"
+      "model.test_project.fct_customer_ltv"
     ],
-    "model.test_project.fct_daily_revenue": []
+    "model.test_project.int_transaction_metrics": [
+      "model.test_project.fct_daily_revenue",
+      "model.test_project.fct_customer_ltv"
+    ],
+    "model.test_project.fct_daily_revenue": [],
+    "model.test_project.fct_customer_ltv": []
   },
   "group_map": {}
 }

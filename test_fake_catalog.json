@@ -18,36 +18,37 @@
       },
       "columns": {
         "TRANSACTION_ID": {
-          "type": "STRING",
-          "index": 1,
+          "type": 1,
+          "index": "STRING",
           "name": "TRANSACTION_ID",
           "comment": null
         },
         "CUSTOMER_ID": {
-          "type": "STRING",
-          "index": 2,
+          "type": 2,
+          "index": "STRING",
           "name": "CUSTOMER_ID",
           "comment": null
         },
         "TRANSACTION_DATE": {
-          "type": "DATE",
-          "index": 3,
+          "type": 3,
+          "index": "DATE",
           "name": "TRANSACTION_DATE",
           "comment": null
         },
         "AMOUNT_USD": {
-          "type": "FLOAT64",
-          "index": 4,
+          "type": 4,
+          "index": "FLOAT64",
           "name": "AMOUNT_USD",
           "comment": null
         },
         "IS_COMPLETED": {
-          "type": "BOOL",
-          "index": 5,
+          "type": 5,
+          "index": "BOOL",
           "name": "IS_COMPLETED",
           "comment": null
         }
       },
+      "unique_id": "model.test_project.stg_transactions",
       "stats": {
         "num_rows": {
           "id": "num_rows",
@@ -63,8 +64,7 @@
           "include": false,
           "description": ""
         }
-      },
-      "unique_id": "model.test_project.stg_transactions"
+      }
     },
     "model.test_project.int_customer_summary": {
       "metadata": {
@@ -77,36 +77,37 @@
       },
       "columns": {
         "CUSTOMER_ID": {
-          "type": "STRING",
-          "index": 1,
+          "type": 1,
+          "index": "STRING",
           "name": "CUSTOMER_ID",
           "comment": null
         },
         "TRANSACTION_COUNT": {
-          "type": "INT64",
-          "index": 2,
+          "type": 2,
+          "index": "INT64",
           "name": "TRANSACTION_COUNT",
           "comment": null
         },
         "TOTAL_AMOUNT_USD": {
-          "type": "FLOAT64",
-          "index": 3,
+          "type": 3,
+          "index": "FLOAT64",
           "name": "TOTAL_AMOUNT_USD",
           "comment": null
         },
         "FIRST_TRANSACTION_DATE": {
-          "type": "DATE",
-          "index": 4,
+          "type": 4,
+          "index": "DATE",
           "name": "FIRST_TRANSACTION_DATE",
           "comment": null
         },
         "LAST_TRANSACTION_DATE": {
-          "type": "DATE",
-          "index": 5,
+          "type": 5,
+          "index": "DATE",
           "name": "LAST_TRANSACTION_DATE",
           "comment": null
         }
       },
+      "unique_id": "model.test_project.int_customer_summary",
       "stats": {
         "num_rows": {
           "id": "num_rows",
@@ -122,8 +123,66 @@
           "include": false,
           "description": ""
         }
+      }
+    },
+    "model.test_project.int_transaction_metrics": {
+      "metadata": {
+        "type": "table",
+        "schema": "intermediate",
+        "name": "int_transaction_metrics",
+        "database": "test_database",
+        "comment": null,
+        "owner": null
       },
-      "unique_id": "model.test_project.int_customer_summary"
+      "columns": {
+        "DATE_DAY": {
+          "type": 1,
+          "index": "DATE",
+          "name": "DATE_DAY",
+          "comment": null
+        },
+        "TRANSACTION_COUNT": {
+          "type": 2,
+          "index": "INT64",
+          "name": "TRANSACTION_COUNT",
+          "comment": null
+        },
+        "GROSS_AMOUNT_USD": {
+          "type": 3,
+          "index": "FLOAT64",
+          "name": "GROSS_AMOUNT_USD",
+          "comment": null
+        },
+        "AVG_AMOUNT_USD": {
+          "type": 4,
+          "index": "FLOAT64",
+          "name": "AVG_AMOUNT_USD",
+          "comment": null
+        },
+        "REFUND_COUNT": {
+          "type": 5,
+          "index": "INT64",
+          "name": "REFUND_COUNT",
+          "comment": null
+        }
+      },
+      "unique_id": "model.test_project.int_transaction_metrics",
+      "stats": {
+        "num_rows": {
+          "id": "num_rows",
+          "label": "Row Count",
+          "value": 0,
+          "include": true,
+          "description": ""
+        },
+        "has_stats": {
+          "id": "has_stats",
+          "label": "Has Stats?",
+          "value": true,
+          "include": false,
+          "description": ""
+        }
+      }
     },
     "model.test_project.fct_daily_revenue": {
       "metadata": {
@@ -136,36 +195,37 @@
       },
       "columns": {
         "DATE_DAY": {
-          "type": "DATE",
-          "index": 1,
+          "type": 1,
+          "index": "DATE",
           "name": "DATE_DAY",
           "comment": null
         },
         "TRANSACTION_COUNT": {
-          "type": "INT64",
-          "index": 2,
+          "type": 2,
+          "index": "INT64",
           "name": "TRANSACTION_COUNT",
           "comment": null
         },
         "GROSS_REVENUE_USD": {
-          "type": "FLOAT64",
-          "index": 3,
+          "type": 3,
+          "index": "FLOAT64",
           "name": "GROSS_REVENUE_USD",
           "comment": null
         },
         "NET_REVENUE_USD": {
-          "type": "FLOAT64",
-          "index": 4,
+          "type": 4,
+          "index": "FLOAT64",
           "name": "NET_REVENUE_USD",
           "comment": null
         },
         "AVG_TRANSACTION_VALUE": {
-          "type": "FLOAT64",
-          "index": 5,
+          "type": 5,
+          "index": "FLOAT64",
           "name": "AVG_TRANSACTION_VALUE",
           "comment": null
         }
       },
+      "unique_id": "model.test_project.fct_daily_revenue",
       "stats": {
         "num_rows": {
           "id": "num_rows",
@@ -181,8 +241,72 @@
           "include": false,
           "description": ""
         }
+      }
+    },
+    "model.test_project.fct_customer_ltv": {
+      "metadata": {
+        "type": "table",
+        "schema": "marts",
+        "name": "fct_customer_ltv",
+        "database": "test_database",
+        "comment": null,
+        "owner": null
       },
-      "unique_id": "model.test_project.fct_daily_revenue"
+      "columns": {
+        "CUSTOMER_ID": {
+          "type": 1,
+          "index": "STRING",
+          "name": "CUSTOMER_ID",
+          "comment": null
+        },
+        "FIRST_ORDER_DATE": {
+          "type": 2,
+          "index": "DATE",
+          "name": "FIRST_ORDER_DATE",
+          "comment": null
+        },
+        "LAST_ORDER_DATE": {
+          "type": 3,
+          "index": "DATE",
+          "name": "LAST_ORDER_DATE",
+          "comment": null
+        },
+        "TOTAL_ORDERS": {
+          "type": 4,
+          "index": "INT64",
+          "name": "TOTAL_ORDERS",
+          "comment": null
+        },
+        "LTV_USD": {
+          "type": 5,
+          "index": "FLOAT64",
+          "name": "LTV_USD",
+          "comment": null
+        },
+        "LTV_SEGMENT": {
+          "type": 6,
+          "index": "STRING",
+          "name": "LTV_SEGMENT",
+          "comment": null
+        }
+      },
+      "unique_id": "model.test_project.fct_customer_ltv",
+      "stats": {
+        "num_rows": {
+          "id": "num_rows",
+          "label": "Row Count",
+          "value": 0,
+          "include": true,
+          "description": ""
+        },
+        "has_stats": {
+          "id": "has_stats",
+          "label": "Has Stats?",
+          "value": true,
+          "include": false,
+          "description": ""
+        }
+      }
     }
   },
   "sources": {
@@ -197,42 +321,43 @@
       },
       "columns": {
         "TRANSACTION_ID": {
-          "type": "STRING",
-          "index": 1,
+          "type": 1,
+          "index": "STRING",
           "name": "TRANSACTION_ID",
           "comment": null
         },
         "CUSTOMER_ID": {
-          "type": "STRING",
-          "index": 2,
+          "type": 2,
+          "index": "STRING",
           "name": "CUSTOMER_ID",
           "comment": null
         },
         "TRANSACTION_DATE": {
-          "type": "DATE",
-          "index": 3,
+          "type": 3,
+          "index": "DATE",
           "name": "TRANSACTION_DATE",
           "comment": null
         },
         "AMOUNT": {
-          "type": "FLOAT64",
-          "index": 4,
+          "type": 4,
+          "index": "FLOAT64",
           "name": "AMOUNT",
           "comment": null
         },
         "CURRENCY": {
-          "type": "STRING",
-          "index": 5,
+          "type": 5,
+          "index": "STRING",
           "name": "CURRENCY",
           "comment": null
         },
         "STATUS": {
-          "type": "STRING",
-          "index": 6,
+          "type": 6,
+          "index": "STRING",
           "name": "STATUS",
           "comment": null
         }
       },
+      "unique_id": "source.test_project.raw_data.transactions",
       "stats": {
         "num_rows": {
           "id": "num_rows",
@@ -248,8 +373,7 @@
           "include": false,
           "description": ""
         }
-      },
-      "unique_id": "source.test_project.raw_data.transactions"
+      }
     }
   },
   "errors": null
